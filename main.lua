@@ -1,4 +1,4 @@
-local DungeonGenerator = require 'dungeon_generator'
+local DungeonGenerator = require 'lib/dungeon_generator'
 
 local dungeon
 
