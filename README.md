@@ -4,4 +4,6 @@ This is a basic dungeon generator, inspired by Zelda NES, where every door leads
 
 It's been made thought so every room will own it's entities (be it enemies, items, or furniture), so you can have many entities, but only update the ones, on the 'active_room'. Still need to be implemented though.
 
-![dungeon generation preview](https://user-images.githubusercontent.com/11387253/26847197-73ecd9fe-4afc-11e7-96f3-ba52433f2366.gif)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/11387253/26847197-73ecd9fe-4afc-11e7-96f3-ba52433f2366.gif" alt="Dungeon generation preview"/>
+</p>
