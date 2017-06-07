@@ -6,15 +6,23 @@ local Door = {
 local door_mt = { __index = Door }
 
 function Door.new( room, wall )
-  local offx, offy = Door.getOffsetFromWall( wall )
+  local ox, oy = Door.getOffsetFromWall( wall )
   local instance = {
     room = room,
     wall = wall,
-    ox = offx, oy = offy
+    ox = ox, oy = oy,
+    is_locked = false
   }
   return setmetatable( instance, door_mt )
 end
 
+-- Getters & Setters
+
+function Door:setIsLocked( isLocked )
+  self.is_locked = isLocked
+end
+
+-- Generating methods
 function Door.getOffsetFromWall( wall )
   local ox, oy = 0, 0
   if wall == 'n' then
@@ -37,6 +45,7 @@ function Door.getWallFromParent( parentWall )
   end
 end
 
+-- Debug methods
 function Door:drawDebug()
   local offsetX, offsetY
   if self.ox == 1 then -- 'e'

@@ -2,6 +2,7 @@ local Dungeon = {
   map = nil,
   active_room = nil,
   start_room = nil,
+  mid_room = nil,
   end_room = nil,
 }
 local dungeon_mt = { __index = Dungeon }
@@ -19,12 +20,16 @@ function Dungeon:setActiveRoom( x, y )
   self.active_room = self.map[x][y]
 end
 
-function Dungeon:setStartRoom( room )
-  self.start_room = room
+function Dungeon:setStartRoom( startRoom )
+  self.start_room = startRoom
 end
 
-function Dungeon:setEndRoom( room )
-  self.end_room = room
+function Dungeon:setMidRoom( midRoom )
+  self.mid_room = midRoom
+end
+
+function Dungeon:setEndRoom( endRoom )
+  self.end_room = endRoom
 end
 
 function Dungeon:isRoomFree( x, y )
@@ -37,13 +42,15 @@ end
 function Dungeon:drawDebug()
   for x=1,#self.map do
     for y=1,#self.map[x] do
-      if self.map[x][y] ~= 0 then
+      if self.map[x][y] then
         self.map[x][y]:drawDebug()
       end
     end
   end
   love.graphics.setColor(0, 255, 0, 255)
   love.graphics.print('S', self.start_room.x * 50 + 20, self.start_room.y * 50 + 18)
+  love.graphics.setColor(0, 0, 255, 255)
+  love.graphics.print('M', self.mid_room.x * 50 + 20, self.mid_room.y * 50 + 18)
   love.graphics.setColor(255, 0, 0, 255)
   love.graphics.print('E', self.end_room.x * 50 + 20, self.end_room.y * 50 + 18)
 end
@@ -60,7 +67,7 @@ function Dungeon:printMapToFile( fileName, mode )
   for y=1,#self.map do
     file:write('[', y, ']')
     for x=1,#self.map[y] do
-      if self.map[x][y] == 0 then
+      if not self.map[x][y] then
         file:write('[ ]')
       elseif self.map[x][y] == self.start_room then
         file:write('[s]')

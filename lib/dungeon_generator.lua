@@ -1,6 +1,6 @@
-local Dungeon = require 'dungeon'
-local Room = require 'room'
-local Door = require 'door'
+local Dungeon = require 'lib/dungeon'
+local Room = require 'lib/room'
+local Door = require 'lib/door'
 
 --[[
   LICENSE - MIT License
@@ -19,10 +19,10 @@ local DungeonGenerator = {
 }
 
 -- MAP_WIDTH and MAP_HEIGHT, could be defined on a table full of global values
-MAP_WIDTH = 5
-MAP_HEIGHT = 5
+Constants.DungeonGenerator.MAP_WIDTH = 5
+Constants.DungeonGenerator.MAP_HEIGHT = 5
 
-function DungeonGenerator.newDungeon( options )
+function DungeonGenerator.new( options )
   -- Instantiate empty dungeon.
   local dungeon = Dungeon.new( )
 
@@ -31,7 +31,7 @@ function DungeonGenerator.newDungeon( options )
   for x=1, MAP_WIDTH do
     map[x] = {}
     for y=1, MAP_HEIGHT  do
-      map[x][y] = 0
+      map[x][y] = nil
     end
   end
   dungeon:setMap( map )
@@ -54,13 +54,16 @@ function DungeonGenerator.newDungeon( options )
 
     -- Generate doors for the room and...
     local addedDoors = DungeonGenerator.addDoors( room, math.min(1, roomsLeft, #room.free_walls), math.min(4, roomsLeft, #room.free_walls) )
-    roomsLeft = roomsLeft - #addedDoors
 
     -- ... create corresponding rooms, and add them to the list of activeRooms
     for i, door in ipairs(addedDoors) do
       local newRoom = DungeonGenerator.addRoom( map, dungeon, room, door )
-      table.insert(activeRooms, newRoom )
+      table.insert( activeRooms, newRoom )
       map[newRoom.x][newRoom.y] = newRoom
+      roomsLeft = roomsLeft - 1
+      if roomsLeft == math.floor( options.rooms_number / 2 ) then
+        dungeon:setMidRoom( newRoom )
+      end
     end
 
     -- If there are no more rooms to process, set endRoom to room
