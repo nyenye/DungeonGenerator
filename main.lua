@@ -1,11 +1,12 @@
 local DungeonGenerator = require 'lib/dungeon_generator'
+Constants = {}
 
 local dungeon
 
 function love.load()
   love.window.setTitle('Dungeon Generator')
   love.window.setMode(350, 350)
-  dungeon = DungeonGenerator.newDungeon( { rooms_number = 20 } )
+  dungeon = DungeonGenerator.new( { rooms_number = 20 } )
   dungeon:printMapToFile('dungeon.txt', 'w')
 end
 
@@ -16,7 +17,7 @@ end
 
 function love.keyreleased(key)
   if key == 'return' then
-    dungeon = DungeonGenerator.newDungeon( { rooms_number = 20 })
+    dungeon = DungeonGenerator.new( { rooms_number = 10 })
     dungeon:printMapToFile('dungeon.txt', 'a')
   end
 end

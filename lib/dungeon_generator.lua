@@ -1,6 +1,6 @@
-local Dungeon = require 'dungeon'
-local Room = require 'room'
-local Door = require 'door'
+local Dungeon = require 'lib/dungeon'
+local Room = require 'lib/room'
+local Door = require 'lib/door'
 
 --[[
   LICENSE - MIT License
@@ -19,10 +19,16 @@ local DungeonGenerator = {
 }
 
 -- MAP_WIDTH and MAP_HEIGHT, could be defined on a table full of global values
-MAP_WIDTH = 5
-MAP_HEIGHT = 5
+Constants.DungeonGenerator.MAP_WIDTH = 5
+Constants.DungeonGenerator.MAP_HEIGHT = 5
 
-function DungeonGenerator.newDungeon( options )
+--[[
+    Returns a random generated Dungeon instance
+    @param - options = Options table with flags and values.
+      options.rooms_number = Number of rooms to create.
+    @return - Dungeon
+--]]
+function DungeonGenerator.new( options )
   -- Instantiate empty dungeon.
   local dungeon = Dungeon.new( )
 
@@ -31,7 +37,7 @@ function DungeonGenerator.newDungeon( options )
   for x=1, MAP_WIDTH do
     map[x] = {}
     for y=1, MAP_HEIGHT  do
-      map[x][y] = 0
+      map[x][y] = nil
     end
   end
   dungeon:setMap( map )
@@ -54,13 +60,16 @@ function DungeonGenerator.newDungeon( options )
 
     -- Generate doors for the room and...
     local addedDoors = DungeonGenerator.addDoors( room, math.min(1, roomsLeft, #room.free_walls), math.min(4, roomsLeft, #room.free_walls) )
-    roomsLeft = roomsLeft - #addedDoors
 
     -- ... create corresponding rooms, and add them to the list of activeRooms
     for i, door in ipairs(addedDoors) do
       local newRoom = DungeonGenerator.addRoom( map, dungeon, room, door )
-      table.insert(activeRooms, newRoom )
+      table.insert( activeRooms, newRoom )
       map[newRoom.x][newRoom.y] = newRoom
+      roomsLeft = roomsLeft - 1
+      if roomsLeft == math.floor( options.rooms_number / 2 ) then
+        dungeon:setMidRoom( newRoom )
+      end
     end
 
     -- If there are no more rooms to process, set endRoom to room
@@ -75,12 +84,25 @@ function DungeonGenerator.newDungeon( options )
   return dungeon
 end
 
+--[[
+    DungeonGenerator.pickRandomStart() - Pick a random starting point for the
+      first room.
+    @return - int, int
+--]]
 function DungeonGenerator.pickRandomStart()
   math.randomseed( os.time() )
   return math.random( 1, MAP_WIDTH ), math.random( 1, MAP_HEIGHT )
 end
 
-function DungeonGenerator.addRoom( map, dungeon, parentRoom, parentDoor )
+--[[
+    DungeonGenerator.addRoom( dungeon, parentRoom, parentDoor ) - Craetes a
+      new room
+    @param - dungeon = Dungeon to add the room to.
+    @param - parentRoom = Room from which we come from.
+    @param - parentDoor = Door of parentRoom we use to go to the new room.
+    @return - Room
+--]]
+function DungeonGenerator.addRoom( dungeon, parentRoom, parentDoor )
   local mapX = parentRoom.x + ( parentDoor.ox )
   local mapY = parentRoom.y + ( parentDoor.oy )
 
@@ -93,6 +115,14 @@ function DungeonGenerator.addRoom( map, dungeon, parentRoom, parentDoor )
   return roomToAdd
 end
 
+--[[
+    DungeonGenerator.addDoors( room, minDoors, maxDoors ) - Creates a
+      random number of doors, between minDoors and maxDoors, to add to a room.
+    @param - room = Room to add the door to.
+    @param - minDoors = Minimum number of doors to add.
+    @param - maxDoors = Maximum number of doors to add.
+    @return - Door[]
+--]]
 function DungeonGenerator.addDoors( room, minDoors, maxDoors )
   local numDoors = math.random(minDoors, maxDoors)
 
