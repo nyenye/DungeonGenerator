@@ -5,6 +5,12 @@ local Door = {
 }
 local door_mt = { __index = Door }
 
+--[[
+  Creates a new Door instance setting it's parent Room, and it's wall.
+  @params room [Room] Room instance.
+  @params wall [string ('n', 's', 'e', 'w')]
+  @return Door
+--]]
 function Door.new( room, wall )
   local ox, oy = Door.getOffsetFromWall( wall )
   local instance = {
@@ -17,12 +23,21 @@ function Door.new( room, wall )
 end
 
 -- Getters & Setters
-
+--[[
+  Set is_locked to supplied value.
+  @params isLocked [bool]
+  @return void
+--]]
 function Door:setIsLocked( isLocked )
   self.is_locked = isLocked
 end
 
 -- Generating methods
+--[[
+  Calculate offset to draw Door in correct wall.
+  @params wall [string ('n', 's', 'e', 'w')]
+  @return int, int
+--]]
 function Door.getOffsetFromWall( wall )
   local ox, oy = 0, 0
   if wall == 'n' then
@@ -37,6 +52,10 @@ function Door.getOffsetFromWall( wall )
   return ox, oy
 end
 
+--[[
+  Returns parent wall, from wall of "grandpa's" room.
+  @return string ('n', 's', 'e', 'w')
+--]]
 function Door.getWallFromParent( parentWall )
   if parentWall == 'n' then return 's'
   elseif parentWall == 's' then return 'n'

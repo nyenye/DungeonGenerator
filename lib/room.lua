@@ -12,6 +12,13 @@ Constants.RoomConditions.KILL_ENEMIES = 1
 Constants.RoomConditions.SOLVE_PUZZLE = 2
 
 -- Methods
+--[[
+  Creates a new Room instance setting it's parent dungeon, and it's position on the map.
+  @params dungeon [Dungeon] Dungeon instance
+  @params x [int] Position X on the dungeon's map.
+  @params y [int] Position Y on the dungeon's map.
+  @return - Room
+--]]
 function Room.new( dungeon, x, y )
   local instance = {
     dungeon = dungeon,
@@ -22,10 +29,19 @@ function Room.new( dungeon, x, y )
   return setmetatable( instance, room_mt )
 end
 
+--[[
+  Method called when player enters the room.
+  @return void
+--]]
 function Room:onEnter()
   self:setDoorsLockState( self.lock_doors )
 end
 
+--[[
+  Method called every update. Must update entities inside room.
+  @params deltaTime [float] Time since last frame
+  @return void
+--]]
 function Room:update( deltaTime )
   if self.lock_doors then
     local unlock = self:checkUnlockCondition()

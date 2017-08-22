@@ -23,7 +23,7 @@ Constants.DungeonGenerator.MAP_WIDTH = 5
 Constants.DungeonGenerator.MAP_HEIGHT = 5
 
 --[[
-    DungeonGenerator.new( options ) - Gererate a new random dungeon.
+    Returns a random generated Dungeon instance
     @param - options = Options table with flags and values.
       options.rooms_number = Number of rooms to create.
     @return - Dungeon

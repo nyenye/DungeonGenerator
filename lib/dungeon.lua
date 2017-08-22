@@ -7,31 +7,68 @@ local Dungeon = {
 }
 local dungeon_mt = { __index = Dungeon }
 
+-- Methods
+--[[
+  Creates a new Dungeon instance.
+  @return - Dungeon
+--]]
 function Dungeon.new( )
   local instance = {}
   return setmetatable( instance, dungeon_mt )
 end
 
+--[[
+  Sets the map property to supplied arg.
+  @params map [matrix(Room)] Matrix of Rooms, which describe the dungeon.
+  @return void
+--]]
 function Dungeon:setMap( map )
   self.map = map
 end
 
+--[[
+  Sets active room to given coords.
+  @params x [int] Position X of the Room in the map
+  @params y [int] Position Y of the Room in the map
+  @return void
+--]]
 function Dungeon:setActiveRoom( x, y )
   self.active_room = self.map[x][y]
 end
 
-function Dungeon:setStartRoom( startRoom )
-  self.start_room = startRoom
+--[[
+  Sets first room created.
+  @params room [Room] Room instance
+  @return void
+--]]
+function Dungeon:setStartRoom( room )
+  self.start_room = room
 end
 
-function Dungeon:setMidRoom( midRoom )
-  self.mid_room = midRoom
+--[[
+  Sets room created halfway.
+  @params room [Room] Room instance
+  @return void
+--]]
+function Dungeon:setMidRoom( room )
+  self.mid_room = room
 end
 
-function Dungeon:setEndRoom( endRoom )
-  self.end_room = endRoom
+--[[
+  Sets room created at the end.
+  @params room [Room] Room instance
+  @return void
+--]]
+function Dungeon:setEndRoom( room )
+  self.end_room = room
 end
 
+--[[
+  Return true if there is no Room on supplied coords
+  @params x [int] Position X of the Room in the map
+  @params y [int] Position Y of the Room in the map
+  @return bool
+--]]
 function Dungeon:isRoomFree( x, y )
   if self.map[x][y] == 0 then
     return true
